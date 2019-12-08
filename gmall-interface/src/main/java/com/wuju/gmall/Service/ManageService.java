@@ -44,4 +44,23 @@ public interface ManageService {
      * @return
      */
     BaseAttrInfo getAttrValueList(String attrId);
+
+    /**
+     * 查询销售属性列表查询功能
+     * @param spuInfo
+     * @return
+     */
+    List<SpuInfo> getSpuInfoList(SpuInfo spuInfo);
+
+ /**
+  * 查询基本销售属性表
+  * @return
+  */
+ List<BaseSaleAttr> getBaseSalesAttrList();
+
+ /**
+  * 保存商品属性
+  * @param spuInfo
+  */
+ public void saveSpuInfo(SpuInfo spuInfo);
 }

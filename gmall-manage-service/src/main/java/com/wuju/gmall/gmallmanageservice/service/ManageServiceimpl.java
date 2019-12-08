@@ -2,8 +2,10 @@ package com.wuju.gmall.gmallmanageservice.service;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.wuju.gmall.*;
+import com.wuju.gmall.BaseSaleAttr;
 import com.wuju.gmall.Service.ManageService;
 import com.wuju.gmall.gmallmanageservice.mapper.*;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,8 @@ import java.util.List;
 @Service
 @Transactional
 public class ManageServiceimpl implements ManageService {
+    @Autowired
+    private SpuInfoMapper spuInfoMapper;
     @Autowired
     private BaseCataLog1Mapper baseCataLog1Mapper;
     @Autowired
@@ -20,7 +24,15 @@ public class ManageServiceimpl implements ManageService {
     @Autowired
     private BaseAttrInfoMapper baseAttrInfoMapper;
     @Autowired
+    private BaseSalesAttrMapper baseSalesAttrMapper;
+    @Autowired
     private BaseAttrValueMapper baseAttrValueMapper;
+    @Autowired
+    private SpuImageMapper spuImageMapper;
+    @Autowired
+    private SpuSaleAttrMapper spuSaleAttrMapper;
+    @Autowired
+    private SpuSaleAttrValueMapper spuSaleAttrValueMapper;
     @Override
     public List<BaseCatalog1> getCataLog1() {
         List<BaseCatalog1> baseCatalog1s = baseCataLog1Mapper.selectAll();
@@ -82,10 +94,62 @@ public class ManageServiceimpl implements ManageService {
         BaseAttrValue baseAttrValue = new BaseAttrValue();
         //设置父类id以便查询
         baseAttrValue.setAttrId(baseAttrInfo.getId());
+
         //查询属性值集合
         List<BaseAttrValue> select = baseAttrValueMapper.select(baseAttrValue);
         //将属性值集合放进父类
         baseAttrInfo.setAttrValueList(select);
         return baseAttrInfo;
+
+    }
+
+    @Override
+    public List<SpuInfo> getSpuInfoList(SpuInfo spuInfo) {
+        List<SpuInfo> select = spuInfoMapper.select(spuInfo);
+        return select;
+    }
+
+    @Override
+    public List<BaseSaleAttr> getBaseSalesAttrList() {
+        List<BaseSaleAttr> baseSalesAttrs = baseSalesAttrMapper.selectAll();
+        return baseSalesAttrs;
+    }
+
+    @Override
+    public void saveSpuInfo(SpuInfo spuInfo) {
+        //spuInfo 表示前台传过来的数据
+    spuInfoMapper.insertSelective(spuInfo);
+    //image
+        List<SpuImage> spuImageList = spuInfo.getSpuImageList();
+        if (spuImageList!=null&&spuImageList.size()>0){
+            for (SpuImage spuImage : spuImageList) {
+                spuImage.setSpuId(spuInfo.getId());
+                spuImageMapper.insertSelective(spuImage);
+            }
+        }
+
+        //保存spuSaleAttr
+        List<SpuSaleAttr> spuSaleAttrList = spuInfo.getSpuSaleAttrList();
+        if (spuSaleAttrList!=null&&spuSaleAttrList.size()>0){
+            for (SpuSaleAttr spuSaleAttr : spuSaleAttrList) {
+//                spuSaleAttr.setSpuId(spuInfo.getId());
+                spuSaleAttrMapper.insertSelective(spuSaleAttr);
+                List<SpuSaleAttrValue> spuSaleAttrValueList = spuSaleAttr.getSpuSaleAttrValueList();
+                if (spuSaleAttrValueList!=null&&spuSaleAttrValueList.size()>0){
+                    for (SpuSaleAttrValue spuSaleAttrValue : spuSaleAttrValueList) {
+                        spuSaleAttrValue.setSpuId(spuInfo.getId());
+                        spuSaleAttrValueMapper.insertSelective(spuSaleAttrValue);
+                    }
+                }
+            }
+        }
+
+    }
+    public <T> boolean checkListEmpty(List<T> list){
+        if (list!=null&&list.size()>0){
+            return true;
+        }else {
+            return false;
+        }
     }
 }

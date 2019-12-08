@@ -3,7 +3,6 @@ package com.wuju.gmall.gmallmanageweb.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.wuju.gmall.*;
 import com.wuju.gmall.Service.ManageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +43,11 @@ public class ManageController {
     public List<BaseAttrValue> getAttrValueList(String attrId){
         BaseAttrInfo baseAttrInfo=manageService.getAttrValueList(attrId);
         return baseAttrInfo.getAttrValueList();
+    }
+    @RequestMapping("baseSaleAttrList")
+    public List<BaseSaleAttr> baseSaleAttrList(){
+        List<BaseSaleAttr> baseSalesAttrList = manageService.getBaseSalesAttrList();
+        return baseSalesAttrList;
     }
 
 
