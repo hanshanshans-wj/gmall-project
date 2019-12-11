@@ -1,6 +1,7 @@
 package com.wuju.gmall.gmallmanageweb.controller;
 
 import com.alibaba.dubbo.remoting.Client;
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
 import org.csource.fastdfs.ClientGlobal;
@@ -17,6 +18,7 @@ import java.io.IOException;
 
 @RestController
 @CrossOrigin
+@Log4j
 public class FileUploadController {
     @Value("${fileServer.url}")
     String fileUrl;
@@ -24,6 +26,7 @@ public class FileUploadController {
     public String uploadFile(MultipartFile file) throws IOException, MyException {
     //读取配置文件的tracker.conf
         String imgUrl=fileUrl;
+
         if (file!=null){
             String configFile=this.getClass().getResource("/tracker.conf").getFile();
             ClientGlobal.init(configFile);
@@ -40,12 +43,12 @@ public class FileUploadController {
                 //1group
                 //2 路径
                 //http://192.168.25.130/group1/M00/00/00/wKgZgl3r6xSAI6m_AAAl_GXv6Z4378.jpg
-                imgUrl="/"+path;
+                imgUrl=imgUrl+"/"+path;
                 System.out.println("path"+path);
             }
 
         }
-
+        System.out.println(imgUrl);
         return imgUrl;
     }
 }

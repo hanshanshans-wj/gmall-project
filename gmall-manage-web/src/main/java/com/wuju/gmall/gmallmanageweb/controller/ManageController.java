@@ -32,7 +32,7 @@ public class ManageController {
     }
     @RequestMapping("attrInfoList")
     public List<BaseAttrInfo> attrInfoList(String catalog3Id){
-        List<BaseAttrInfo> attrInfo = manageService.getAttrInfo(catalog3Id);
+        List<BaseAttrInfo> attrInfo = manageService.selectBaseAttrInfoListByCatalog3Id(catalog3Id);
         return attrInfo;
     }
     @RequestMapping("saveAttrInfo")
