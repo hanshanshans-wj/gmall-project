@@ -17,4 +17,13 @@ WHERE
 AND si.spu_id = #{0}
 ORDER BY si.id ,ssav.sale_attr_id
     </select>
+    <resultMap id="skuSaleValue" type="java.util.Map" autoMapping="true">
+
+    </resultMap>
+    <select id="getSaleAttrValuesBySpu" resultMap="skuSaleValue">
+    select group_concat(sale_attr_value_id order by sale_attr_id asc separator '|')value_ids,sku_id from sku_sale_attr_value sv inner join sku_info si on
+sv.sku_id=si.id where spu_id=#{spuId} group by sku_id
+
+    </select>
+
 </mapper>

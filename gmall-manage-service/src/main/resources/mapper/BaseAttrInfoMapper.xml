@@ -11,4 +11,8 @@
     SELECT bai.id,bai.attr_name,bai.catalog3_id,bav.id attr_value_id,bav.attr_id,bav.value_name FROM base_attr_info bai INNER JOIN
     base_attr_value bav ON bai.id=bav.attr_id WHERE catalog3_id=#{0}
     </select>
+    <select id="selectAttrInfoListByIds" resultMap="baseAttrInfoMap">
+    select bi.id,bi.attr_name,catalog3_id,bv.id attr_value_id,bv.attr_id,bv.value_name  from base_attr_info bi inner join base_attr_value bv
+on  bi.id=bv.attr_id where bv.id in (${valueIds})
+    </select>
 </mapper>

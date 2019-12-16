@@ -3,6 +3,7 @@ package com.wuju.gmall.Service;
 import com.wuju.gmall.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ManageService {
     /**
@@ -111,4 +112,8 @@ public interface ManageService {
      * @return
      */
     List<SkuSaleAttrValue> getSkuSaleAttrValueListBySpu(String spuId);
+
+    Map getSkuValueIdsMap(String spuId);
+
+    List<BaseAttrInfo> getAttrList(List<String> attrValueIdList);
 }

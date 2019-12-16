@@ -75,4 +75,19 @@ public interface UserInfoService {
      * @param id
      */
     void deleteByPrimaryKey(String id);
+
+    /**
+     * 登录方法
+     * @param userInfo
+     * @return
+     */
+    UserInfo login(UserInfo userInfo);
+
+    /**
+     * 查询是否有缓存
+     * @param userId
+     * @return
+     */
+
+    UserInfo verify(String userId);
 }

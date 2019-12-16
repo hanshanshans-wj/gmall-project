@@ -2,6 +2,7 @@ package com.wuju.gmall.gmallitemweb.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.wuju.gmall.Service.ListService;
 import com.wuju.gmall.Service.ManageService;
 import com.wuju.gmall.SkuInfo;
 import com.wuju.gmall.SkuSaleAttrValue;
@@ -9,22 +10,29 @@ import com.wuju.gmall.SpuSaleAttr;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ItemController {
     @Reference
     private ManageService manageService;
+    @Reference
+    private ListService listService;
+
+
     @RequestMapping("{skuId}.html")
     public String getSkuInfo(@PathVariable(value = "skuId") String skuId, HttpServletRequest request){
         SkuInfo skuInfo = manageService.getSkuInfo(skuId);
         request.setAttribute("skuInfo",skuInfo);
         List<SpuSaleAttr> saleAttrList=manageService.getSpuSaleAttrListCheckBySku(skuInfo);
         request.setAttribute("saleAttrList",saleAttrList);
+//        第一种方案
         //通过spuid来进行不同的sku切换
         String key="";
         HashMap<String,String> map=new HashMap<>();
@@ -51,6 +59,11 @@ public class ItemController {
             }
 
         }
+
+//        select group_concat(sale_attr_value_id order by sale_attr_id asc separator '|')value_ids,sku_id from sku_sale_attr_value sv inner join sku_info si on
+//        sv.sku_id=si.id where spu_id='68' group by sku_id
+//        Map skuValueIdsMap=manageService.getSkuValueIdsMap(skuInfo.getSpuId());
+        listService.incrHotScore(skuId);//最终应该由异步方式调用
         //转化成json字符串
         String valuesSkuJson = JSON.toJSONString(map);
         //保存数据，渲染
